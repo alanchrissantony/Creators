@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "author": "Sarah Johnson",
+        "title": "Senior Product Manager at Tech Corp",
+        "time": "2h",
+        "content": "Excited to share that our team just launched a groundbreaking AI feature that will revolutionize how businesses handle customer service. Proud of what we've accomplished! 🚀",
+        "likes": 124,
+        "comments": 18,
+        "reposts": 5,
+        "image": "https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": 2,
+        "author": "Michael Chen",
+        "title": "Software Engineer | Full Stack Developer",
+        "time": "5h",
+        "content": "Just completed a 30-day coding challenge! Here are my key takeaways:\n\n1. Consistency beats intensity\n2. Small improvements compound over time\n3. Community support is invaluable\n\nWhat challenges are you taking on this month?",
+        "likes": 89,
+        "comments": 12,
+        "reposts": 3,
+        "image": null
+    },
+    {
+        "id": 3,
+        "author": "Emily Rodriguez",
+        "title": "HR Director | People & Culture",
+        "time": "1d",
+        "content": "We're hiring! Looking for talented developers, designers, and product managers to join our growing team. Remote-friendly positions available. DM me for more details!",
+        "likes": 256,
+        "comments": 42,
+        "reposts": 15,
+        "image": null
+    }
+]

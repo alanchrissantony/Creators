@@ -1,0 +1,80 @@
+[
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+      "role": "User",
+      "status": "Active",
+      "joinDate": "2024-01-15",
+      "lastActive": "2 hours ago",
+      "posts": 45,
+      "connections": 234,
+      "verified": true
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
+      "role": "Premium",
+      "status": "Active",
+      "joinDate": "2023-11-20",
+      "lastActive": "5 minutes ago",
+      "posts": 128,
+      "connections": 567,
+      "verified": true
+    },
+    {
+      "id": 3,
+      "name": "Mike Johnson",
+      "email": "mike.j@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
+      "role": "Recruiter",
+      "status": "Active",
+      "joinDate": "2023-09-10",
+      "lastActive": "1 day ago",
+      "posts": 67,
+      "connections": 891,
+      "verified": true
+    },
+    {
+      "id": 4,
+      "name": "Sarah Williams",
+      "email": "sarah.w@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      "role": "User",
+      "status": "Suspended",
+      "joinDate": "2024-02-01",
+      "lastActive": "3 days ago",
+      "posts": 12,
+      "connections": 45,
+      "verified": false
+    },
+    {
+      "id": 5,
+      "name": "Robert Brown",
+      "email": "robert.b@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
+      "role": "Admin",
+      "status": "Active",
+      "joinDate": "2023-06-15",
+      "lastActive": "Just now",
+      "posts": 234,
+      "connections": 1234,
+      "verified": true
+    },
+    {
+      "id": 6,
+      "name": "Emily Davis",
+      "email": "emily.d@example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
+      "role": "User",
+      "status": "Inactive",
+      "joinDate": "2023-12-10",
+      "lastActive": "2 weeks ago",
+      "posts": 8,
+      "connections": 23,
+      "verified": false
+    }
+]
