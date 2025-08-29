@@ -31,7 +31,7 @@ import {
 
 
 const ContentModeration = () => {
-  const [selectedContent, setSelectedContent] = useState<number | null>(null);
+  const [selectedContent, _setSelectedContent] = useState(null)
 
   // Mock reported content
   const reportedContent = [
