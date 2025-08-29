@@ -1,23 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "@/store/base-query";
+import { Post } from "@/types/post"
 
-export interface Post {
-    id: string;
-    user: { username: string };
-    content: string;
-    image?: string;
-    category: "general" | "announcement" | "question";
-    like_count: number;
-    comment_count: number;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface CreatePostRequest {
-    content?: string;
-    image?: any; // FormData
-    category?: "general" | "announcement" | "question";
-}
 
 export const postsApi = createApi({
     reducerPath: "postsApi",
@@ -62,16 +46,36 @@ export const postsApi = createApi({
             invalidatesTags: ["Post"],
         }),
 
-        listPosts: builder.query<Post[], { page?: number; pageSize?: number }>({
-            query: ({ page = 1, pageSize = 10 } = {}) => ({
-                url: `posts/?page=${page}&page_size=${pageSize}`,
+        listPosts: builder.query<Post[], void | { page?: number; pageSize?: number }>({
+            query: (args) => {
+                const { page = 1, pageSize = 10 } = args || {};
+                return {
+                    url: `posts/?page=${page}&page_size=${pageSize}`,
+                    method: "GET",
+                    credentials: "include",
+                };
+            },
+            transformResponse: (response: { results: Post[] }) => response.results,
+            providesTags: ["Post"],
+        }),
+
+        listPostsByUser: builder.query<Post[], { userId: string; page?: number; pageSize?: number }>({
+            query: ({ userId, page = 1, pageSize = 10 }) => ({
+                url: `posts/?user=${userId}&page=${page}&page_size=${pageSize}`,
                 method: "GET",
                 credentials: "include",
             }),
             transformResponse: (response: { results: Post[] }) => response.results,
-            providesTags: ["Post"],
+            providesTags: (result, error, { userId }) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: "Post" as const, id })),
+                        { type: "Post", id: `USER_${userId}` },
+                    ]
+                    : [{ type: "Post", id: `USER_${userId}` }],
         }),
-        toggleLikePost: builder.mutation<{ like_count: number; liked: boolean }, string>({
+
+        toggleLikePost: builder.mutation<{ like_count: number; liked: boolean },  string>({
             query: (postId) => ({
                 url: `posts/${postId}/like/`,
                 method: "POST",
@@ -89,4 +93,5 @@ export const {
     useDeletePostMutation,
     useListPostsQuery,
     useToggleLikePostMutation,
+    useListPostsByUserQuery,
 } = postsApi;

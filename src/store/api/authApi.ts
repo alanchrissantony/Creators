@@ -1,7 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "@/store/base-query";
-import type { LoginRequest, RegisterRequest, VerifyOTPRequest, ResendOTPRequest } from "@/types/user";
-
+import type { RegisterRequest, LoginRequest, VerifyOTPRequest, ResendOTPRequest } from "@/types/user";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -18,7 +17,7 @@ export const authApi = createApi({
       invalidatesTags: ["Auth"],
     }),
 
-    login: builder.mutation<{ message: string }, LoginRequest>({
+    login: builder.mutation<{ user: any; message?: string }, LoginRequest>({
       query: (body) => ({
         url: "auth/login/",
         method: "POST",

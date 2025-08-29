@@ -15,6 +15,7 @@ class Post(models.Model):
     image = models.URLField(blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='general')
 
+    liked_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
     like_count = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)
 
@@ -29,19 +30,6 @@ class Post(models.Model):
         return f"Post by {self.user.username} at {self.created_at}"
 
 
-
-class Like(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="likes")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ("post", "user")
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.user.username} liked {self.post.id}"
 
 
 class Comment(models.Model):

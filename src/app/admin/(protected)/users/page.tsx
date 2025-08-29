@@ -38,12 +38,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import users from '@/assets/users.json'
+import { useGetAllUsersQuery } from "@/store/api/userApi";
 
 const UserManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   
+  const { data, isLoading } = useGetAllUsersQuery();
+
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -82,7 +85,7 @@ const UserManagement = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">11,523</div>
+            <div className="text-2xl font-bold text-foreground">{data?.total_users}</div>
             <p className="text-xs text-green-600">+1,234 this month</p>
           </CardContent>
         </Card>
@@ -94,7 +97,7 @@ const UserManagement = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">8,234</div>
+            <div className="text-2xl font-bold text-foreground">{data?.total_active_users}</div>
             <p className="text-xs text-muted-foreground">71.4% of total</p>
           </CardContent>
         </Card>
@@ -102,11 +105,11 @@ const UserManagement = () => {
         <Card className="border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Premium Users
+              Non Active Users
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">2,534</div>
+            <div className="text-2xl font-bold text-foreground">{data?.total_non_active_users}</div>
             <p className="text-xs text-green-600">+15% conversion</p>
           </CardContent>
         </Card>
@@ -118,7 +121,7 @@ const UserManagement = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">45</div>
+            <div className="text-2xl font-bold text-foreground">{data?.total_verified_users}</div>
             <p className="text-xs text-destructive">12 pending review</p>
           </CardContent>
         </Card>
@@ -182,18 +185,18 @@ const UserManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {users?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={user.avatar} />
-                        <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        <AvatarFallback>{user?.first_name?.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-foreground">{user.name}</p>
-                          {user.verified && (
+                          <p className="font-medium text-foreground">{user?.first_name} {user?.last_name}</p>
+                          {user?.is_verified && (
                             <Badge variant="outline" className="h-5 px-1">
                               <UserCheck className="h-3 w-3" />
                             </Badge>
@@ -209,7 +212,7 @@ const UserManagement = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {user.joinDate}
+                    {user?.created_at}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {user.lastActive}
@@ -218,7 +221,7 @@ const UserManagement = () => {
                     {user.posts}
                   </TableCell>
                   <TableCell className="text-center text-foreground">
-                    {user.connections}
+                    {user?.followers}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

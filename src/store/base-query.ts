@@ -2,8 +2,8 @@ import { fetchBaseQuery, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import type { FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000/api/',
-  credentials: 'include', // sends HttpOnly cookies
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL as string,
+  credentials: "include",
 });
 
 export const baseQueryWithReauth: BaseQueryFn<

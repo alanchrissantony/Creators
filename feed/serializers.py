@@ -1,10 +1,26 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Comment
 from .supabase_client import supabase
-import uuid
+from users.serializers import UserSerializer
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'content', 'created_at']
 
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['content']  # only content is required for creation
+
+    def validate_content(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Comment cannot be empty")
+        if len(value) > 255:
+            raise serializers.ValidationError("Comment cannot exceed 255 characters")
+        return value
 
 class PostCreateSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
@@ -48,15 +64,25 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 
 class PostListSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = UserSerializer(read_only=True)  # 👈 full details
+    liked_by_user = serializers.SerializerMethodField()
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
         fields = [
             'id', 'user', 'content', 'image', 'category',
             'like_count', 'comment_count', 'is_active',
-            'created_at', 'updated_at'
+            'created_at', 'updated_at', 'liked_by_user',
+            'comments',
         ]
+
+    def get_liked_by_user(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            return obj.liked_by.filter(id=request.user.id).exists()
+        return False
+
 
 
 
@@ -96,4 +122,21 @@ class PostUpdateSerializer(serializers.ModelSerializer):
             validated_data['image'] = url
 
         return super().update(instance, validated_data)
+
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    liked = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'like_count', 'liked']
+
+    def get_liked(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            return request.user in obj.liked_by.all()
+        return False
+    
+
 

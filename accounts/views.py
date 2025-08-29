@@ -5,27 +5,30 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from accounts.serializers import UserRegisterSerializer, VerifyOTPSerializer, UserLoginSerializer, ResendOTPSerializer, ForgotPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from users.serializers import UserSerializer
+from django.contrib.auth import authenticate
 
 
 
 # Create your views here.
-def set_cookies(response: Response, access_token: str=None, refresh_token: str=None):
-
-    response.set_cookie(
-        key=settings.SIMPLE_JWT["AUTH_COOKIE"],
-        value=str(access_token),
-        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-    )
-    response.set_cookie(
-        key=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"],
-        value=str(refresh_token),
-        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
-        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
-        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
-    )
-
+def set_cookies(response: Response, access_token: str = None, refresh_token: str = None):
+    if access_token:
+        response.set_cookie(
+            key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+            value=str(access_token),
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+        )
+    if refresh_token:
+        response.set_cookie(
+            key=settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"],
+            value=str(refresh_token),
+            httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+            secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+            samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+        )
+    return response
 
 class UserRegisterView(APIView):
 
@@ -41,7 +44,6 @@ class UserRegisterView(APIView):
     
 
 class UserLoginView(APIView):
-
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -54,10 +56,16 @@ class UserLoginView(APIView):
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
 
-            response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+            user_data = UserSerializer(user).data
+
+            response = Response({
+                "message": "Login successful",
+                "user": user_data
+            }, status=status.HTTP_200_OK)
 
             set_cookies(response, access_token, refresh_token)
             return response
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -129,9 +137,11 @@ class ForgotPasswordView(APIView):
 
 class RefreshTokenView(APIView):
 
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
+
         refresh_token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"])
 
         if not refresh_token:
@@ -140,10 +150,9 @@ class RefreshTokenView(APIView):
         try:
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
-            refresh_token = str(refresh)
-            
-            response = Response({"message": "Access token has updated successfully."}, status=status.HTTP_200_OK)
-            set_cookies(response, access_token, refresh_token)
+
+            response = Response({"message": "Access token refreshed successfully"}, status=status.HTTP_200_OK)
+            set_cookies(response=response, access_token=access_token)
             return response
         except TokenError:
             return Response({"error": "Invalid or expired refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -151,3 +160,59 @@ class RefreshTokenView(APIView):
 
 
 
+
+class AdminLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        user = authenticate(email=email, password=password)
+        if not user:
+            return Response({"error": "Invalid email or password"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.is_staff and not user.is_superuser:
+            return Response({"error": "Not authorized as admin"}, status=status.HTTP_403_FORBIDDEN)
+        
+        if not user.is_active:
+            return Response({"error": "Your account is temporarily suspended."}, status=status.HTTP_400_BAD_REQUEST)
+
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        user_data = UserSerializer(user).data
+
+        response = Response({
+            "message": "Admin login successful",
+            "admin": user_data
+        }, status=status.HTTP_200_OK)
+
+        set_cookies(response, access_token, refresh_token)
+        return response
+
+
+class AdminLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"])
+
+        if not refresh_token:
+            return Response({"error": "Refresh token not found in cookies"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        response = Response({"message": "Admin logout successful"}, status=status.HTTP_200_OK)
+        response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
+        response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"])
+        return response
+    
+
+
+    

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/store/api/authApi";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/api/authSlice";
+import { setUser } from "@/store/slice/authSlice";
 
 function LoginForm() {
   const router = useRouter();
@@ -22,16 +22,16 @@ function LoginForm() {
     e.preventDefault();
 
     try {
-      await login({ email, password }).unwrap();
+      const response = await login({ email, password }).unwrap();
 
-      dispatch(setUser({ email }));
+      dispatch(setUser(response.user));
 
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
 
-      router.push("/"); 
+      router.push("/");
     } catch (error: any) {
       toast({
         title: "Login failed",

@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Post } from "@/store/api/postsApi";
+import {Post, PostsState} from "@/types/post"
 
-interface PostsState {
-  posts: Post[];
-  currentPost: Post | null;
-}
 
 const initialState: PostsState = {
   posts: [],

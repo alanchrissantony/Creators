@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { clearUser } from "@/store/api/authSlice";
+import { clearUser } from "@/store/slice/authSlice";
 import { useLogoutMutation } from "@/store/api/authApi";
 import { toast } from "@/hooks/use-toast";
 

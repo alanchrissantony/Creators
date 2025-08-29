@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { useAppDispatch } from "@/store/hook";
 import { useCreatePostMutation } from "@/store/api/postsApi";
-import { addPost } from "@/store/api/postsSlice";
+import { addPost } from "@/store/slice/postsSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";

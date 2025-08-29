@@ -1,8 +1,9 @@
+import { AdminPublicRoute } from "@/routes/admin-public-route";
 import type { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-    title: 'Profile - Creators'
+    title: 'Login - Admin'
 }
 
 export default function Layout({
@@ -11,8 +12,8 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <>
+        <AdminPublicRoute>
             {children}
-        </>
+        </AdminPublicRoute>
     );
 }
