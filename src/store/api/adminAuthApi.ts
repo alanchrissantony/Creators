@@ -8,7 +8,7 @@ export const adminAuthApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["AdminAuth"],
   endpoints: (builder) => ({
-    loginAdmin: builder.mutation<{ admin: any; message?: string }, LoginRequest>({
+    loginAdmin: builder.mutation<{ admin: unknown; message?: string }, LoginRequest>({
       query: (body) => ({
         url: "auth/admin/login/",
         method: "POST",

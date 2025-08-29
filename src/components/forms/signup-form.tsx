@@ -45,7 +45,7 @@ function SignupForm() {
       });
 
       router.push("/verify");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Signup failed",
         description: error?.data?.message || "Something went wrong",

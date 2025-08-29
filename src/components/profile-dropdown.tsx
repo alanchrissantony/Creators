@@ -30,7 +30,7 @@ export default function ProfileDropDown() {
       dispatch(clearUser());    // clear user from Redux
       toast({ title: "Logged out", description: "You have been logged out." });
       router.push("/login");    // redirect to login
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Logout failed",
         description: error?.data?.message || "Something went wrong.",

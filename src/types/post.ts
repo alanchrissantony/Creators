@@ -30,7 +30,7 @@ export interface Post {
 
 export interface CreatePostRequest {
   content?: string;
-  image?: any; // FormData
+  image?: unknown; // FormData
   category?: "general" | "announcement" | "question" | "music";
 }
 

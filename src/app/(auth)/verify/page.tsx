@@ -30,7 +30,7 @@ export default function Page() {
             <div>
               <CardTitle className="text-2xl font-bold">Verify Your Email</CardTitle>
               <CardDescription className="mt-2">
-                We've sent a 6-digit verification code to
+                We&apos;ve sent a 6-digit verification code to
                 <span className="block font-medium text-foreground mt-1">{email}</span>
               </CardDescription>
             </div>

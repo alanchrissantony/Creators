@@ -20,7 +20,7 @@ function Logout() {
             dispatch(clearAdmin());
             toast({ title: "Logged out", description: "You have been logged out." });
             router.push("/login");
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast({
                 title: "Logout failed",
                 description: error?.data?.message || "Something went wrong.",

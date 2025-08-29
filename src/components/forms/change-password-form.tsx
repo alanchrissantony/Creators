@@ -49,7 +49,7 @@ function ChangePasswordForm() {
       toast({ title: "Password updated successfully!" });
 
       setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Password update failed",
         description: error?.data?.message || "Something went wrong",

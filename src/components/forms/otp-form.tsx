@@ -50,7 +50,7 @@ export default function OtpForm({ email }: OtpFormProps) {
       });
 
       router.push("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Verification failed",
         description: error?.data?.message || "Something went wrong",
@@ -73,7 +73,7 @@ export default function OtpForm({ email }: OtpFormProps) {
       });
 
       setOtp("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Failed to resend OTP",
         description: error?.data?.message || "Something went wrong",

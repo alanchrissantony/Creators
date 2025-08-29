@@ -32,7 +32,7 @@ function AdminForm() {
       });
 
       router.push("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Login failed",
         description: error?.data?.message || "Please check your credentials.",
